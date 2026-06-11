@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Артём — репетитор по математике и информатике</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07071a;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --text: #e8e8f0;
+            --text-secondary: #b0b0c8;
+            --text-tertiary: #8888a8;
+            --accent-1: #6366f1;
+            --accent-2: #8b5cf6;
+            --accent-3: #a78bfa;
+            --accent-glow: rgba(99, 102, 241, 0.25);
+            --warm: #f59e0b;
+            --warm-glow: rgba(245, 158, 11, 0.3);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.16);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --radius-lg: 28px;
+            --transition: 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --transition-fast: 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+            --font: 'Inter', system-ui, -apple-system, sans-serif;
+            --max-width: 1100px;
+            --nav-height: 72px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-image:
+                radial-gradient(circle, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 36px 36px;
+            background-position: 0 0;
+            background-attachment: fixed;
+        }
+
+        /* ── Ambient glow orbs ── */
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+            will-change: transform;
+        }
+        .ambient-orb--purple {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, transparent 70%);
+            top: -15%;
+            right: -10%;
+        }
+        .ambient-orb--blue {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, transparent 70%);
+            bottom: 20%;
+            left: -8%;
+        }
+        .ambient-orb--warm {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+            top: 50%;
+            right: 20%;
+            opacity: 0.35;
+        }
+
+        /* ── Floating geometric shapes ── */
+        .geo-shapes {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .geo-shape {
+            position: absolute;
+            opacity: 0.5;
+            will-change: transform;
+            animation: floatShape var(--dur) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+        .geo-shape--circle {
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.015);
+        }
+        .geo-shape--diamond {
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            background: rgba(139, 92, 246, 0.08);
+            border: 1.5px solid rgba(139, 92, 246, 0.18);
+        }
+        .geo-shape--triangle {
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            background: rgba(99, 102, 241, 0.07);
+            border: 1.5px solid rgba(99, 102, 241, 0.15);
+        }
+        .geo-shape--dot-cluster {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(167, 139, 250, 0.5);
+            box-shadow:
+                18px -10px 0 rgba(167, 139, 250, 0.35),
+                -14px 16px 0 rgba(167, 139, 250, 0.3),
+                6px 20px 0 rgba(167, 139, 250, 0.25);
+        }
+
+        @keyframes floatShape {
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(var(--dx1), var(--dy1)) rotate(var(--r1));
+            }
+            50% {
+                transform: translate(var(--dx2), var(--dy2)) rotate(var(--r2));
+            }
+            75% {
+                transform: translate(var(--dx3), var(--dy3)) rotate(var(--r3));
+            }
+        }
+
+        /* ── Main content wrapper ── */
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Navigation ── */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 24px;
+            transition: var(--transition);
+        }
+        .nav--scrolled {
+            background: rgba(7, 7, 26, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+        }
+        .nav__inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: var(--max-width);
+        }
+        .nav__logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav__logo-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--accent-2);
+            box-shadow: 0 0 12px var(--accent-glow);
+            animation: logoPulse 2.5s ease-in-out infinite;
+        }
+        @keyframes logoPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 12px var(--accent-glow);
+            }
+            50% {
+                box-shadow: 0 0 24px rgba(139, 92, 246, 0.55);
+            }
+        }
+        .nav__links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav__link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            position: relative;
+            letter-spacing: -0.01em;
+        }
+        .nav__link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-2);
+            border-radius: 1px;
+            transition: width var(--transition-fast);
+        }
+        .nav__link:hover {
+            color: #fff;
+        }
+        .nav__link:hover::after {
+            width: 100%;
+        }
+        .nav__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: var(--accent-1);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            letter-spacing: -0.01em;
+            transition: var(--transition-fast);
+            box-shadow: 0 4px 20px var(--accent-glow);
+            white-space: nowrap;
+        }
+        .nav__cta:hover {
+            background: var(--accent-2);
+            box-shadow: 0 6px 30px rgba(139, 92, 246, 0.45);
+            transform: translateY(-1px);
+        }
+
+        /* ── Sections ── */
+        .section {
+            padding: 80px 24px;
+            position: relative;
+        }
+        .section--hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: var(--nav-height);
+            padding-bottom: 60px;
+        }
+        .section__inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            width: 100%;
+        }
+        .section__label {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent-3);
+            margin-bottom: 16px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        .section__title {
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .section__subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            text-align: center;
+        }
+        .hero__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .hero__badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+        .hero__title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            margin-bottom: 20px;
+            color: #fff;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+        }
+        .hero__title-accent {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3), #c4b5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero__text {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 580px;
+            margin: 0 auto 36px;
+            line-height: 1.7;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        .hero__buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition-fast);
+            font-family: var(--font);
+            white-space: nowrap;
+        }
+        .btn--primary {
+            background: var(--accent-1);
+            color: #fff;
+            box-shadow: 0 6px 28px var(--accent-glow);
+        }
+        .btn--primary:hover {
+            background: var(--accent-2);
+            box-shadow: 0 8px 36px rgba(139, 92, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn--outline {
+            background: transparent;
+            color: #fff;
+            border: 1.5px solid var(--border-hover);
+        }
+        .btn--outline:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .btn--warm {
+            background: var(--warm);
+            color: #0a0a1a;
+            box-shadow: 0 6px 28px var(--warm-glow);
+            font-weight: 700;
+        }
+        .btn--warm:hover {
+            background: #fbbf24;
+            box-shadow: 0 8px 36px rgba(245, 158, 11, 0.5);
+            transform: translateY(-2px);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Cards grid ── */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        .card:hover::before {
+            opacity: 1;
+        }
+        .card__icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 18px;
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: var(--transition-fast);
+        }
+        .card:hover .card__icon {
+            background: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+        .card__title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .card__text {
+            font-size: 0.92rem;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+        }
+
+        /* ── Stats ── */
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            justify-content: center;
+            margin-top: 40px;
+            padding: 36px 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .stat {
+            text-align: center;
+            min-width: 120px;
+        }
+        .stat__number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            color: #fff;
+            line-height: 1;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat__label {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        /* ── Pricing ── */
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .pricing-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .pricing-card--featured {
+            border-color: rgba(139, 92, 246, 0.4);
+            background: rgba(139, 92, 246, 0.06);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.12);
+        }
+        .pricing-card--featured::after {
+            content: 'Популярный';
+            position: absolute;
+            top: -13px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-2);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 5px 16px;
+            border-radius: 50px;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .pricing-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        .pricing-card__duration {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+        .pricing-card__price {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .pricing-card__price-sub {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+        }
+        .pricing-card__abonement {
+            font-size: 0.82rem;
+            color: var(--accent-3);
+            font-weight: 500;
+            padding: 8px 14px;
+            background: rgba(139, 92, 246, 0.08);
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 18px;
+        }
+        .pricing-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ── Contact section ── */
+        .contact-block {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 32px;
+            align-items: stretch;
+        }
+        .contact-card {
+            flex: 1;
+            min-width: 220px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            text-align: center;
+            transition: var(--transition);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .contact-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+        }
+        .contact-card__icon {
+            font-size: 2rem;
+            margin-bottom: 4px;
+        }
+        .contact-card__title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+        }
+        .contact-card__value {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 40px 24px;
+            color: var(--text-tertiary);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        /* ── Reveal animation ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s cubic-bezier(0.25, 0.1, 0.25, 1),
+                transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .reveal--visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 {
+            transition-delay: 0.1s;
+        }
+        .reveal-delay-2 {
+            transition-delay: 0.2s;
+        }
+        .reveal-delay-3 {
+            transition-delay: 0.3s;
+        }
+        .reveal-delay-4 {
+            transition-delay: 0.4s;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .nav__links {
+                display: none;
+            }
+            .nav__inner {
+                justify-content: center;
+            }
+            .nav__logo {
+                font-size: 1.1rem;
+            }
+            .nav__cta {
+                display: none;
+            }
+            .nav--scrolled .nav__cta {
+                display: inline-flex;
+                font-size: 0.78rem;
+                padding: 8px 16px;
+            }
+            .nav--scrolled .nav__inner {
+                justify-content: space-between;
+            }
+            .nav--scrolled .nav__links {
+                display: none;
+            }
+            .section {
+                padding: 50px 16px;
+            }
+            .section--hero {
+                padding-top: calc(var(--nav-height) + 20px);
+                min-height: auto;
+                padding-bottom: 40px;
+            }
+            .hero__title {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+            .stats-bar {
+                gap: 20px;
+                padding: 24px 16px;
+            }
+            .stat__number {
+                font-size: 2rem;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .pricing-cards {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .contact-block {
+                flex-direction: column;
+            }
+            .geo-shape {
+                display: none;
+            }
+            .geo-shape--dot-cluster {
+                display: block;
+            }
+            .ambient-orb {
+                opacity: 0.3;
+            }
+        }
+        @media (max-width: 400px) {
+            .hero__buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+                font-size: 0.9rem;
+                padding: 13px 20px;
+            }
+            .pricing-card__price {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Ambient glow orbs ── -->
+    <div class="ambient-orb ambient-orb--purple" data-parallax="0.02"></div>
+    <div class="ambient-orb ambient-orb--blue" data-parallax="0.03"></div>
+    <div class="ambient-orb ambient-orb--warm" data-parallax="0.015"></div>
+
+    <!-- ── Floating geometric shapes ── -->
+    <div class="geo-shapes" id="geoShapes">
+        <div class="geo-shape geo-shape--circle"
+        style="width:120px;height:120px;top:15%;left:8%;--dur:18s;--delay:0s;--dx1:30px;--dy1:-25px;--r1:15deg;--dx2:-20px;--dy2:35px;--r2:-10deg;--dx3:15px;--dy3:-15px;--r3:20deg;"></div>
+        <div class="geo-shape geo-shape--diamond"
+        style="width:80px;height:80px;top:22%;right:12%;--dur:22s;--delay:-5s;--dx1:-35px;--dy1:20px;--r1:25deg;--dx2:25px;--dy2:-30px;--r2:-20deg;--dx3:-15px;--dy3:25px;--r3:10deg;"></div>
+        <div class="geo-shape geo-shape--triangle"
+        style="width:100px;height:90px;bottom:25%;left:14%;--dur:20s;--delay:-8s;--dx1:25px;--dy1:-30px;--r1:-15deg;--dx2:-30px;--dy2:20px;--r2:18deg;--dx3:20px;--dy3:15px;--r3:-12deg;"></div>
+        <div class="geo-shape geo-shape--circle"
+        style="width:60px;height:60px;bottom:30%;right:18%;--dur:16s;--delay:-3s;--dx1:-20px;--dy1:-20px;--r1:30deg;--dx2:20px;--dy2:25px;--r2:-25deg;--dx3:-10px;--dy3:-15px;--r3:15deg;"></div>
+        <div class="geo-shape geo-shape--dot-cluster"
+        style="top:35%;left:60%;--dur:14s;--delay:-6s;--dx1:15px;--dy1:-20px;--r1:0deg;--dx2:-18px;--dy2:15px;--r2:0deg;--dx3:10px;--dy3:18px;--r3:0deg;"></div>
+        <div class="geo-shape geo-shape--diamond"
+        style="width:50px;height:50px;top:60%;left:75%;--dur:24s;--delay:-10s;--dx1:-25px;--dy1:-15px;--r1:40deg;--dx2:15px;--dy2:30px;--r2:-30deg;--dx3:-20px;--dy3:-10px;--r3:20deg;"></div>
+    </div>
+
+    <!-- ── Main content ── -->
+    <div class="main-content">
+
+        <!-- Navigation -->
+        <nav class="nav" id="nav">
+            <div class="nav__inner">
+                <a href="#" class="nav__logo">
+                    <span class="nav__logo-dot"></span> Артём
+                </a>
+                <ul class="nav__links">
+                    <li><a href="#about" class="nav__link">Обо мне</a></li>
+                    <li><a href="#services" class="nav__link">Услуги</a></li>
+                    <li><a href="#pricing" class="nav__link">Цены</a></li>
+                    <li><a href="#contact" class="nav__link">Контакты</a></li>
+                </ul>
+                <a href="#contact" class="nav__cta">
+                    ✏️ Пробный урок
+                </a>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <section class="section section--hero" id="hero">
+            <div class="section__inner hero">
+                <div class="hero__badge">
+                    <span class="hero__badge-dot"></span> Идёт набор на 2026/2027 учебный год
+                </div>
+                <h1 class="hero__title">
+                    Репетитор по<br>
+                    <span class="hero__title-accent">математике</span> и&nbsp;<span class="hero__title-accent">информатике</span>
+                </h1>
+                <p class="hero__text">
+                    Подготовка к ОГЭ и ЕГЭ, устранение пробелов в знаниях, развитие логического мышления.
+                    Онлайн-занятия с интерактивной доской — удобно и эффективно.
+                </p>
+                <div class="hero__buttons">
+                    <a href="#contact" class="btn btn--warm">🎁 Бесплатный пробный урок</a>
+                    <a href="#pricing" class="btn btn--outline">📋 Смотреть цены</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About -->
+        <section class="section" id="about">
+            <div class="section__inner">
+                <span class="section__label reveal">👋 Обо мне</span>
+                <h2 class="section__title reveal reveal-delay-1">Артём — ваш проводник<br>в мир точных наук</h2>
+                <p class="section__subtitle reveal reveal-delay-2">
+                    Студент ДВФУ по направлению «Технологии анализа цифрового следа» — редкая
+                    и прикладная специальность на стыке данных, алгоритмов и логических структур.
+                    Этот аналитический подход я переношу на каждый урок: мы не заучиваем формулы,
+                    а понимаем саму логику предмета.
+                </p>
+                <div class="stats-bar reveal reveal-delay-3">
+                    <div class="stat">
+                        <div class="stat__number" data-count="3">0</div>
+                        <div class="stat__label">года опыта</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__number" data-count="40">0</div>
+                        <div class="stat__label">учеников подготовлено</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__number" data-count="100">0</div>
+                        <div class="stat__label">% вовлечённость</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat__number" data-count="60">0</div>
+                        <div class="stat__label">минут — от 1400₽</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services / For whom -->
+        <section class="section" id="services">
+            <div class="section__inner">
+                <span class="section__label reveal">🎯 Кому подойдёт</span>
+                <h2 class="section__title reveal reveal-delay-1">Вам точно ко мне, если</h2>
+                <div class="cards-grid">
+                    <div class="card reveal reveal-delay-1">
+                        <div class="card__icon">🧩</div>
+                        <h3 class="card__title">Пробелы в знаниях</h3>
+                        <p class="card__text">Системно закрываем пробелы по математике и информатике — от дробей до алгоритмов. Ребёнок перестаёт бояться предмета и начинает понимать.</p>
+                    </div>
+                    <div class="card reveal reveal-delay-2">
+                        <div class="card__icon">🎓</div>
+                        <h3 class="card__title">Подготовка к ОГЭ / ЕГЭ</h3>
+                        <p class="card__text">Структурированная подготовка с разбором реальных заданий, лайфхаками и стратегией. Никакой воды — только то, что реально пригодится на экзамене.</p>
+                    </div>
+                    <div class="card reveal reveal-delay-3">
+                        <div class="card__icon">💡</div>
+                        <h3 class="card__title">Привить любовь к точным наукам</h3>
+                        <p class="card__text">Показываю красоту математики и логики через интересные задачи и примеры из реальной жизни. Учёба перестаёт быть скучной обязанностью.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How it works -->
+        <section class="section">
+            <div class="section__inner">
+                <span class="section__label reveal">💻 Формат занятий</span>
+                <h2 class="section__title reveal reveal-delay-1">Как проходят уроки</h2>
+                <p class="section__subtitle reveal reveal-delay-2">
+                    Полностью онлайн — вам не нужно тратить время на дорогу. Занимаемся через
+                    <strong>Яндекс Телемост</strong> и интерактивную доску <strong>Miro</strong>,
+                    где ученик может писать, рисовать схемы и решать задачи в реальном времени.
+                </p>
+                <div class="cards-grid">
+                    <div class="card reveal reveal-delay-1">
+                        <div class="card__icon">🖥️</div>
+                        <h3 class="card__title">Видеосвязь</h3>
+                        <p class="card__text">Яндекс Телемост — стабильная связь без лишних установок. Всё, что нужно — ссылка на встречу.</p>
+                    </div>
+                    <div class="card reveal reveal-delay-2">
+                        <div class="card__icon">📝</div>
+                        <h3 class="card__title">Интерактивная доска</h3>
+                        <p class="card__text">Miro — пишем, чертим, решаем вместе. Все записи сохраняются — можно вернуться к любой теме.</p>
+                    </div>
+                    <div class="card reveal reveal-delay-3">
+                        <div class="card__icon">⏱️</div>
+                        <h3 class="card__title">Гибкий график</h3>
+                        <p class="card__text">Подбираем удобное время. Длительность занятия — 60, 90 или 120 минут в зависимости от целей.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section class="section" id="pricing">
+            <div class="section__inner">
+                <span class="section__label reveal">💰 Стоимость</span>
+                <h2 class="section__title reveal reveal-delay-1">Прозрачные цены</h2>
+                <p class="section__subtitle reveal reveal-delay-2">
+                    Первое занятие — <strong>бесплатно</strong> (30–40 минут). Знакомимся, определяем уровень,
+                    я показываю формат, вы принимаете решение.
+                </p>
+                <div class="pricing-cards">
+                    <div class="pricing-card reveal reveal-delay-1">
+                        <div class="pricing-card__duration">60 минут</div>
+                        <div class="pricing-card__price">1 400 ₽</div>
+                        <div class="pricing-card__price-sub">разовое занятие</div>
+                        <div class="pricing-card__abonement">Абонемент: 1 250 ₽</div>
+                        <a href="#contact" class="btn btn--outline">Записаться</a>
+                    </div>
+                    <div class="pricing-card pricing-card--featured reveal reveal-delay-2">
+                        <div class="pricing-card__duration">90 минут</div>
+                        <div class="pricing-card__price">2 100 ₽</div>
+                        <div class="pricing-card__price-sub">разовое занятие</div>
+                        <div class="pricing-card__abonement">Абонемент: 1 850 ₽</div>
+                        <a href="#contact" class="btn btn--primary">Записаться</a>
+                    </div>
+                    <div class="pricing-card reveal reveal-delay-3">
+                        <div class="pricing-card__duration">120 минут</div>
+                        <div class="pricing-card__price">2 800 ₽</div>
+                        <div class="pricing-card__price-sub">разовое занятие</div>
+                        <div class="pricing-card__abonement">Абонемент: 2 500 ₽</div>
+                        <a href="#contact" class="btn btn--outline">Записаться</a>
+                    </div>
+                </div>
+                <p style="text-align:center;margin-top:20px;font-size:0.88rem;color:var(--text-tertiary);" class="reveal reveal-delay-4">
+                    💡 Абонемент на месяц — <strong style="color:var(--accent-3);">экономия от 150₽</strong> с каждого занятия.
+                    Работаю по предоплате (за занятие или абонемент — как удобнее).
+                </p>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="section" id="contact">
+            <div class="section__inner">
+                <span class="section__label reveal">📬 Связаться</span>
+                <h2 class="section__title reveal reveal-delay-1">Начнём заниматься?</h2>
+                <p class="section__subtitle reveal reveal-delay-2">
+                    Напишите мне в Telegram или позвоните — я отвечу в течение часа.
+                    В первом сообщении укажите класс, предмет и цель занятий.
+                </p>
+                <div class="contact-block">
+                    <a href="https://t.me/Heaven_28nl_80wl" target="_blank" rel="noopener noreferrer"
+                    class="contact-card reveal reveal-delay-1">
+                    <span class="contact-card__icon">💬</span>
+                    <span class="contact-card__title">Telegram</span>
+                    <span class="contact-card__value">@Heaven_28nl_80wl</span>
+                    <span style="font-size:0.78rem;color:var(--text-tertiary);">Предпочтительный способ</span>
+                </a>
+                <!-- Блок телефона без ссылки, чтобы не открывать Skype -->
+                <div class="contact-card reveal reveal-delay-2">
+                    <span class="contact-card__icon">📞</span>
+                    <span class="contact-card__title">Телефон</span>
+                    <span class="contact-card__value">+7 953 224-68-16</span>
+                    <span style="font-size:0.78rem;color:var(--text-tertiary);">Если нет Telegram</span>
+                </div>
+                <div class="contact-card reveal reveal-delay-3" style="cursor:default;">
+                    <span class="contact-card__icon">🎁</span>
+                    <span class="contact-card__title">Пробный урок</span>
+                    <span class="contact-card__value">Бесплатно • 30–40 мин</span>
+                    <span style="font-size:0.78rem;color:var(--accent-3);">Знакомимся и определяем уровень</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Артём — репетитор по математике и информатике. ДВФУ, «Технологии анализа цифрового следа».</p>
+        <p style="margin-top:6px;">Все занятия проводятся онлайн. Индивидуальный подход к каждому ученику.</p>
+    </footer>
+</div>
+
+<script>
+    (function() {
+        // ── Navigation scroll effect ──
+        const nav = document.getElementById('nav');
+        let lastScrollY = 0;
+
+        function updateNav() {
+            const scrollY = window.scrollY;
+            if (scrollY > 60) {
+                nav.classList.add('nav--scrolled');
+            } else {
+                nav.classList.remove('nav--scrolled');
+            }
+            lastScrollY = scrollY;
+        }
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+
+        // ── Scroll reveal with Intersection Observer ──
+        const revealElements = document.querySelectorAll('.reveal');
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -60px 0px',
+            threshold: 0.1,
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal--visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // ── Counter animation for stats ──
+        const statNumbers = document.querySelectorAll('.stat__number[data-count]');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseInt(el.getAttribute('data-count'), 10);
+                    const duration = 1800;
+                    const startTime = performance.now();
+                    const suffix = el.textContent.includes('₽') ? '₽' : '';
+
+                    function updateCounter(timestamp) {
+                        const elapsed = timestamp - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        const current = Math.round(eased * target);
+                        el.textContent = current + (suffix ? '' : '');
+                        if (progress < 1) {
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            el.textContent = target + (suffix ? '' : '');
+                        }
+                    }
+                    requestAnimationFrame(updateCounter);
+                    counterObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statNumbers.forEach(el => counterObserver.observe(el));
+
+        // ── Parallax effect on ambient orbs ──
+        const orbs = document.querySelectorAll('[data-parallax]');
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateParallax() {
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            targetX = (mouseX - cx) / cx;
+            targetY = (mouseY - cy) / cy;
+
+            orbs.forEach(orb => {
+                const factor = parseFloat(orb.getAttribute('data-parallax'));
+                const dx = targetX * factor * 80;
+                const dy = targetY * factor * 80;
+                orb.style.transform = `translate(${dx}px, ${dy}px)`;
+            });
+
+            requestAnimationFrame(animateParallax);
+        }
+        if (orbs.length > 0 && window.innerWidth > 768) {
+            requestAnimationFrame(animateParallax);
+        }
+
+        // ── Smooth scroll for nav links ──
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    const navHeight = nav.offsetHeight;
+                    const targetPosition = target.getBoundingClientRect().top + window
+                        .scrollY - navHeight - 16;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth',
+                    });
+                }
+            });
+        });
+
+        // ── Subtle parallax on geo shapes with mouse ──
+        const geoShapes = document.querySelectorAll('.geo-shape');
+        if (geoShapes.length > 0 && window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                const cx = window.innerWidth / 2;
+                const cy = window.innerHeight / 2;
+                const mx = (e.clientX - cx) / cx;
+                const my = (e.clientY - cy) / cy;
+
+                geoShapes.forEach((shape, i) => {
+                    const depth = 6 + i * 4;
+                    const dx = mx * depth;
+                    const dy = my * depth;
+                    shape.style.transform += ` translate(${dx}px, ${dy}px)`;
+                });
+            });
+        }
+
+        console.log('%c🚀 Сайт-визитка Артёма загружен! %cГотов к работе.',
+            'color: #a78bfa; font-size: 1.1rem; font-weight: bold;',
+            'color: #b0b0c8;');
+        console.log('%c💡 Напишите в Telegram: @Heaven_28nl_80wl или звоните: +7 953 224-68-16',
+            'color: #f59e0b;');
+    })();
+</script>
+</body>
+</html>
